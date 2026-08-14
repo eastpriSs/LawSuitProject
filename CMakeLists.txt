@@ -6,6 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Xml)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(QuaZip-Qt6 REQUIRED)
 
 qt_add_executable(Lawsuit
@@ -16,8 +17,16 @@ qt_add_qml_module(Lawsuit
     URI LawsuitProject
     VERSION 1.0
     QML_FILES
-        Main.qml
-        QML_FILES DatePickerPopup.qml
+        qml/Main.qml
+        QML_FILES qml/DatePickerPopup.qml
+        QML_FILES
+        SOURCES view/style_manager.h view/style_manager.cpp
+        SOURCES view/file_list_model.h view/file_list_model.cpp
+        QML_FILES qml/CustomGroupBox.qml
+        QML_FILES qml/ContactGroupBox.qml
+        QML_FILES qml/ExpertiseGroupBox.qml
+        QML_FILES qml/FileListView.qml
+        QML_FILES qml/ActionButtons.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -36,6 +45,7 @@ target_link_libraries(Lawsuit
             Qt6::Xml
             QuaZip::QuaZip
 )
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)
 install(TARGETS Lawsuit

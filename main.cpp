@@ -16,14 +16,12 @@ bool replacePlaceholdersInDocx(const QString &inputPath,
 {
     const QString WORDML_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
 
-    // --- Чтение исходного docx как ZIP ---
     QuaZip zipIn(inputPath);
     if (!zipIn.open(QuaZip::mdUnzip)) {
         qWarning() << "Failed to open input docx:" << inputPath;
         return false;
     }
 
-    // Извлекаем word/document.xml
     QByteArray documentXml;
     {
         QuaZipFile fileIn(&zipIn);
@@ -38,7 +36,6 @@ bool replacePlaceholdersInDocx(const QString &inputPath,
     }
     zipIn.close();
 
-    // --- Парсинг и замена ---
     QDomDocument doc;
 
     doc.setContent(documentXml, QDomDocument::ParseOption::UseNamespaceProcessing);
@@ -58,21 +55,18 @@ bool replacePlaceholdersInDocx(const QString &inputPath,
         }
 
         if (changed) {
-            // Удаляем старое содержимое и вставляем новый текст
             while (tElem.hasChildNodes())
                 tElem.removeChild(tElem.firstChild());
             tElem.appendChild(doc.createTextNode(text));
         }
     }
 
-    // --- Запись в новый docx (копируем архив, заменяя document.xml) ---
     QuaZip zipOut(outputPath);
     if (!zipOut.open(QuaZip::mdCreate)) {
         qWarning() << "Failed to create output docx:" << outputPath;
         return false;
     }
 
-    // Переоткрываем исходный архив для копирования
     QuaZip zipIn2(inputPath);
     if (!zipIn2.open(QuaZip::mdUnzip)) {
         qWarning() << "Failed to reopen input docx";
@@ -90,14 +84,12 @@ bool replacePlaceholdersInDocx(const QString &inputPath,
 
         QuaZipNewInfo newInfo(fileName);
         if (fileName == "word/document.xml") {
-            // Подставляем модифицированный XML
             const QByteArray newXml = doc.toByteArray();
             newInfo.uncompressedSize = newXml.size();
             if (!dstFile.open(QIODevice::WriteOnly, newInfo)) return false;
             dstFile.write(newXml);
             dstFile.close();
         } else {
-            // Остальные файлы копируем как есть
             if (!dstFile.open(QIODevice::WriteOnly, newInfo)) return false;
             dstFile.write(srcFile.readAll());
             dstFile.close();
@@ -111,22 +103,48 @@ bool replacePlaceholdersInDocx(const QString &inputPath,
 }
 
 
+// int main(int argc, char *argv[])
+// {
+//     QGuiApplication app(argc, argv);
+
+//     QQmlApplicationEngine engine;
+//     const QUrl url(QStringLiteral("qrc:/LawsuitProject/Main.qml"));
+//     QObject::connect(
+//         &engine,
+//         &QQmlApplicationEngine::objectCreated,
+//         &app,
+//         [url](QObject *obj, const QUrl &objUrl) {
+//             if (!obj && url == objUrl)
+//                 QCoreApplication::exit(-1);
+//         },
+//         Qt::QueuedConnection);
+//     engine.load(url);
+
+//     return app.exec();
+// }
+
+
+#include <QQmlContext>
+#include "view/style_manager.h"
+#include "view/file_list_model.h"
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/LawsuitProject/Main.qml"));
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreated,
-        &app,
-        [url](QObject *obj, const QUrl &objUrl) {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1);
-        },
-        Qt::QueuedConnection);
-    engine.load(url);
+
+    StyleManager styleManager;
+    FileListModel fileModel;
+
+    fileModel.appendItem("Bill Smith", "555 3264", false);
+    fileModel.appendItem("John Brown", "555 8426", false);
+    fileModel.appendItem("Sam Wise", "555 0473", false);
+
+    engine.rootContext()->setContextProperty("StyleManager", &styleManager);
+    engine.rootContext()->setContextProperty("FileModel", &fileModel);
+
+    engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
 
     return app.exec();
 }

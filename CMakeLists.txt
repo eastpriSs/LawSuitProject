@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Xml)
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(QuaZip-Qt6 REQUIRED)
 
 qt_add_executable(Lawsuit
@@ -27,6 +31,20 @@ qt_add_qml_module(Lawsuit
         QML_FILES qml/ExpertiseGroupBox.qml
         QML_FILES qml/FileListView.qml
         QML_FILES qml/ActionButtons.qml
+        SOURCES presenters/form_presenter.h presenters/form_presenter.cpp
+        SOURCES models/form_model.h models/form_model.cpp
+        SOURCES
+        SOURCES domain/use_case/update_template_list.h domain/use_case/update_template_list.cpp
+        SOURCES
+        SOURCES domain/repo_interfaces/i_template_repository.h domain/repo_interfaces/i_template_repository.cpp
+        SOURCES data/dir_template_parser.h data/dir_template_parser.cpp
+        SOURCES domain/entity/path.h domain/entity/path.cpp
+        SOURCES domain/use_case/update_template_fields.h domain/use_case/update_template_fields.cpp
+        SOURCES domain/repo_interfaces/i_template_fields_repository.h domain/repo_interfaces/i_template_fields_repository.cpp
+        SOURCES data/txt_template_fileds_parser.h data/txt_template_fileds_parser.cpp
+        QML_FILES qml/PlaintiffGroupBox.qml
+        QML_FILES qml/DefendantGroupBox.qml
+        SOURCES view/highlight.h view/highlight.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -45,6 +63,11 @@ target_link_libraries(Lawsuit
             Qt6::Xml
             QuaZip::QuaZip
 )
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)

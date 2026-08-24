@@ -5,10 +5,19 @@
 #include <QDomDocument>
 #include <QMap>
 #include <QDebug>
-
+#include <QQmlContext>
 #include <quazip.h>
 #include <quazipfile.h>
 
+#include "view/style_manager.h"
+#include "view/file_list_model.h"
+#include "presenters/form_presenter.h"
+#include "models/form_model.h"
+#include "domain/use_case/update_template_list.h"
+#include "domain/use_case/update_template_fields.h"
+#include "data/dir_template_parser.h"
+#include "data/txt_template_fileds_parser.h"
+#include "view/highlight.h"
 
 bool replacePlaceholdersInDocx(const QString &inputPath,
                                const QString &outputPath,
@@ -102,32 +111,6 @@ bool replacePlaceholdersInDocx(const QString &inputPath,
     return true;
 }
 
-
-// int main(int argc, char *argv[])
-// {
-//     QGuiApplication app(argc, argv);
-
-//     QQmlApplicationEngine engine;
-//     const QUrl url(QStringLiteral("qrc:/LawsuitProject/Main.qml"));
-//     QObject::connect(
-//         &engine,
-//         &QQmlApplicationEngine::objectCreated,
-//         &app,
-//         [url](QObject *obj, const QUrl &objUrl) {
-//             if (!obj && url == objUrl)
-//                 QCoreApplication::exit(-1);
-//         },
-//         Qt::QueuedConnection);
-//     engine.load(url);
-
-//     return app.exec();
-// }
-
-
-#include <QQmlContext>
-#include "view/style_manager.h"
-#include "view/file_list_model.h"
-
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
@@ -136,15 +119,20 @@ int main(int argc, char *argv[])
 
     StyleManager styleManager;
     FileListModel fileModel;
+    Highlight highlight;
 
-    fileModel.appendItem("Bill Smith", "555 3264", false);
-    fileModel.appendItem("John Brown", "555 8426", false);
-    fileModel.appendItem("Sam Wise", "555 0473", false);
-
+    engine.rootContext()->setContextProperty("Highlight", &highlight);
     engine.rootContext()->setContextProperty("StyleManager", &styleManager);
     engine.rootContext()->setContextProperty("FileModel", &fileModel);
 
     engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
+
+    DirTemplateParser dirParser;
+    TemplateFieldsTxtParser txtParser;
+    UpdateTemplateList updateTemplates(&dirParser);
+    UpdateTemplateFields updateTemplatesFields(&txtParser);
+    FormModel model(&updateTemplates, &updateTemplatesFields);
+    FormPresenter presenter(&fileModel, &model, &highlight);
 
     return app.exec();
 }

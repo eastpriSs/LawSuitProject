@@ -41,6 +41,10 @@ public:
 
 signals:
     void countChanged();
+    void itemCheckedChanged(const QString &name, bool checked);
+
+public slots:
+    void updateFileList(QStringList);
 
 private:
     QVector<FileItem> m_items;

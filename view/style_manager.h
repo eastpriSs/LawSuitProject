@@ -16,6 +16,7 @@ class StyleManager : public QObject
     Q_PROPERTY(QColor background READ background WRITE setBackground NOTIFY backgroundChanged)
     Q_PROPERTY(QColor white READ white WRITE setWhite NOTIFY whiteChanged)
     Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor NOTIFY borderColorChanged)
+    Q_PROPERTY(QColor accentTextColor READ accentTextColor WRITE setAccentTextColor NOTIFY accentTextColorChanged)
 
     Q_PROPERTY(int fontSizeLarge READ fontSizeLarge WRITE setFontSizeLarge NOTIFY fontSizeLargeChanged)
     Q_PROPERTY(int fontSizeTitle READ fontSizeTitle WRITE setFontSizeTitle NOTIFY fontSizeTitleChanged)
@@ -48,6 +49,7 @@ public:
     QColor background() const { return m_background; }
     QColor white() const { return m_white; }
     QColor borderColor() const { return m_borderColor; }
+    QColor accentTextColor() const { return m_accentTextColor; }
 
     int fontSizeLarge() const { return m_fontSizeLarge; }
     int fontSizeTitle() const { return m_fontSizeTitle; }
@@ -77,6 +79,7 @@ public:
     void setBackground(const QColor &c) { if (m_background != c) { m_background = c; emit backgroundChanged(); } }
     void setWhite(const QColor &c) { if (m_white != c) { m_white = c; emit whiteChanged(); } }
     void setBorderColor(const QColor &c) { if (m_borderColor != c) { m_borderColor = c; emit borderColorChanged(); } }
+    void setAccentTextColor(const QColor &c) { if (m_accentTextColor != c) { m_accentTextColor = c; emit accentTextColorChanged(); } }
 
     void setFontSizeLarge(int v) { if (m_fontSizeLarge != v) { m_fontSizeLarge = v; emit fontSizeLargeChanged(); } }
     void setFontSizeTitle(int v) { if (m_fontSizeTitle != v) { m_fontSizeTitle = v; emit fontSizeTitleChanged(); } }
@@ -104,6 +107,7 @@ signals:
     void secondaryTextChanged();
     void lightTextChanged();
     void backgroundChanged();
+    void accentTextColorChanged();
     void whiteChanged();
     void borderColorChanged();
     void fontSizeLargeChanged();
@@ -132,6 +136,7 @@ private:
     QColor m_background     = QColor("#f4f6f9");
     QColor m_white          = QColor("#ffffff");
     QColor m_borderColor    = QColor("#3498db");
+    QColor m_accentTextColor= QColor("#00BCD4");
 
     int m_fontSizeLarge     = 24;
     int m_fontSizeTitle     = 16;

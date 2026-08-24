@@ -32,9 +32,7 @@ ListView {
                 id: checkBox
                 checked: model.checked
                 onToggled: {
-                    if (typeof model.setItemChecked === "function") {
-                        model.setItemChecked(index, checked)
-                    }
+                    listView.model.setItemChecked(index, checked)
                 }
                 Layout.alignment: Qt.AlignLeft
             }
@@ -55,7 +53,6 @@ ListView {
 
         onClicked: {
             listView.currentIndex = index
-            checkBox.toggle()
         }
     }
 

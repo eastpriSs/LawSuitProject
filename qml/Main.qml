@@ -90,9 +90,8 @@ Window {
                         }
                     }
                 }
-
-                ContactGroupBox { Layout.fillWidth: true; titleText: "Истец" }
-                ContactGroupBox { Layout.fillWidth: true; titleText: "Ответчик" }
+                PlaintiffGroupBox { Layout.fillWidth: true }
+                DefendantGroupBox { Layout.fillWidth: true }
                 ExpertiseGroupBox { id: expertiseBox; Layout.fillWidth: true;  }
 
                 DatePickerPopup {

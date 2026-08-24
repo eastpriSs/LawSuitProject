@@ -29,11 +29,26 @@ bool FileListModel::setData(const QModelIndex &index, const QVariant &value, int
 
     FileItem &item = m_items[index.row()];
     if (role == CheckedRole) {
-        item.checked = value.toBool();
-        emit dataChanged(index, index, {role});
+        bool newChecked = value.toBool();
+        if (item.checked != newChecked) {
+            item.checked = newChecked;
+            emit dataChanged(index, index, {role});
+            emit itemCheckedChanged(item.name, newChecked);
+        }
         return true;
     }
     return false;
+}
+
+void FileListModel::setItemChecked(int row, bool checked)
+{
+    if (row < 0 || row >= m_items.size()) return;
+    FileItem &item = m_items[row];
+    item.checked = checked;
+    emit itemCheckedChanged(item.name, checked);
+    QModelIndex idx = index(row);
+    emit dataChanged(idx, idx, {CheckedRole});
+
 }
 
 QHash<int, QByteArray> FileListModel::roleNames() const
@@ -69,14 +84,6 @@ void FileListModel::removeItem(int row)
     emit countChanged();
 }
 
-void FileListModel::setItemChecked(int row, bool checked)
-{
-    if (row < 0 || row >= m_items.size()) return;
-    m_items[row].checked = checked;
-    QModelIndex idx = index(row);
-    emit dataChanged(idx, idx, {CheckedRole});
-}
-
 void FileListModel::clearModel()
 {
     if (m_items.isEmpty()) return;
@@ -92,4 +99,11 @@ void FileListModel::setItems(const QVector<FileItem> &items)
     m_items = items;
     endResetModel();
     emit countChanged();
+}
+
+void FileListModel::updateFileList(QStringList files)
+{
+    foreach (QString file, files) {
+        appendItem(file, "test", false);
+    }
 }

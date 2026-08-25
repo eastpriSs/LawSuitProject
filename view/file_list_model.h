@@ -7,7 +7,7 @@
 
 struct FileItem {
     QString name;
-    QString number;
+    QString note;
     bool checked;
 };
 
@@ -32,12 +32,13 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    Q_INVOKABLE void appendItem(const QString &name, const QString &number, bool checked = false);
+    Q_INVOKABLE void appendItem(const QString &name, const QString &note, bool checked = false);
     Q_INVOKABLE void removeItem(int row);
     Q_INVOKABLE void setItemChecked(int row, bool checked);
     Q_INVOKABLE void clearModel();
 
     void setItems(const QVector<FileItem> &items);
+    void updateNote(QString name, QString note);
 
 signals:
     void countChanged();

@@ -8,7 +8,16 @@ UpdateTemplateList::UpdateTemplateList(ITemplateRepository* repo, QObject *paren
 
 QStringList UpdateTemplateList::operator()(const QString &path)
 {
-    Path p(path.toStdString());
-    QStringList templates = repo->getTemplates(QString::fromStdString(p.value()));
+    QStringList templates;
+    try {
+        Path p(path.toStdString());
+        templates = repo->getTemplates(QString::fromStdString(p.value()));
+
+        if (templates.empty()) emit templatesError("Ни один шаблон не был загружен.");
+
+    } catch (const std::invalid_argument& errPath) {
+        emit pathError("Путь к шаблоном указан неверно. Возможно, файл конфигурации был поврежден.");
+    }
+
     return templates;
 }

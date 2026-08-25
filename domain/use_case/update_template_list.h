@@ -13,6 +13,8 @@ public:
 private:
     ITemplateRepository* repo;
 signals:
+    void pathError(QString p);
+    void templatesError(QString err);
 };
 
 #endif // UPDATE_TEMPLATE_LIST_H

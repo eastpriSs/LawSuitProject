@@ -11,6 +11,7 @@ class TemplateFieldsTxtParser : public ITemplateFieldsRepository
 public:
     explicit TemplateFieldsTxtParser(QObject *parent = nullptr);
     QMap<QString, QStringList> getTemplateFieldsMap(const QString path, const QStringList docxs) override;
+
 signals:
 };
 

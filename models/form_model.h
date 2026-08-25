@@ -15,10 +15,18 @@ public:
 
 signals:
     void templatesGot(QStringList templates);
-    void highlightFieldsRequested(QStringList fields);
+    void highlightFieldsRequested(QSet<QString> fields);
+    void errorNoteRequested(QString name, QString note);
+    void errorMasseageRequested(const QString& title, const QString& discription);
+    void appStateSwitchRequested(QString state);
 
 public slots:
     void templateChecked(const QString &name, bool checked);
+
+private slots:
+    void onCannotUpdateFieldsForDoc(QString doc);
+    void onPathError(QString p);
+    void onTemplatesError(QString err);
 
 private:
     UpdateTemplateList* updateTemplates;

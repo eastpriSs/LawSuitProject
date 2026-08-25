@@ -18,6 +18,7 @@
 #include "data/dir_template_parser.h"
 #include "data/txt_template_fileds_parser.h"
 #include "view/highlight.h"
+#include "view/error_handler.h"
 
 bool replacePlaceholdersInDocx(const QString &inputPath,
                                const QString &outputPath,
@@ -120,7 +121,9 @@ int main(int argc, char *argv[])
     StyleManager styleManager;
     FileListModel fileModel;
     Highlight highlight;
+    ErrorHandler errorHandler;
 
+    engine.rootContext()->setContextProperty("errorHandler", &errorHandler);
     engine.rootContext()->setContextProperty("Highlight", &highlight);
     engine.rootContext()->setContextProperty("StyleManager", &styleManager);
     engine.rootContext()->setContextProperty("FileModel", &fileModel);
@@ -132,7 +135,7 @@ int main(int argc, char *argv[])
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
     FormModel model(&updateTemplates, &updateTemplatesFields);
-    FormPresenter presenter(&fileModel, &model, &highlight);
+    FormPresenter presenter(&fileModel, &model, &highlight, &errorHandler);
 
     return app.exec();
 }

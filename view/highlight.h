@@ -2,26 +2,25 @@
 #define HIGHLIGHT_H
 
 #include <QObject>
-#include <QStringList>
+#include <QSet>
 
 class Highlight : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QStringList activeFields READ activeFields NOTIFY activeFieldsChanged)
+    Q_PROPERTY(QSet<QString> activeFields READ activeFields NOTIFY activeFieldsChanged)
 
 public:
     explicit Highlight(QObject *parent = nullptr);
-
-    QStringList activeFields() const { return m_activeFields; }
+    QSet<QString> activeFields() const { return m_activeFields; }
 
 public slots:
-    void setActiveFields(const QStringList &fields);
+    void setActiveFields(QSet<QString> fields);
 
 signals:
     void activeFieldsChanged();
 
 private:
-    QStringList m_activeFields;
+    QSet<QString> m_activeFields;
 };
 
 #endif // HIGHLIGHT_H

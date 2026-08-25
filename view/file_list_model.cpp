@@ -16,7 +16,7 @@ QVariant FileListModel::data(const QModelIndex &index, int role) const
     const FileItem &item = m_items[index.row()];
     switch (role) {
     case NameRole:   return item.name;
-    case NumberRole: return item.number;
+    case NumberRole: return item.note;
     case CheckedRole: return item.checked;
     default: return QVariant();
     }
@@ -67,10 +67,10 @@ Qt::ItemFlags FileListModel::flags(const QModelIndex &index) const
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
 }
 
-void FileListModel::appendItem(const QString &name, const QString &number, bool checked)
+void FileListModel::appendItem(const QString &name, const QString &note, bool checked)
 {
     beginInsertRows(QModelIndex(), m_items.size(), m_items.size());
-    m_items.append({name, number, checked});
+    m_items.append({name, note, checked});
     endInsertRows();
     emit countChanged();
 }
@@ -101,9 +101,19 @@ void FileListModel::setItems(const QVector<FileItem> &items)
     emit countChanged();
 }
 
+void FileListModel::updateNote(QString name, QString note)
+{
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
+        if (i->name == name) {
+            i->note = note;
+            return;
+        }
+    }
+}
+
 void FileListModel::updateFileList(QStringList files)
 {
     foreach (QString file, files) {
-        appendItem(file, "test", false);
+        appendItem(file, "", false);
     }
 }

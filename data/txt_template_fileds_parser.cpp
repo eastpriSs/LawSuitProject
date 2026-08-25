@@ -10,14 +10,14 @@ TemplateFieldsTxtParser::TemplateFieldsTxtParser(QObject *parent)
 
 QMap<QString, QStringList> TemplateFieldsTxtParser::getTemplateFieldsMap(const QString path, const QStringList docxs)
 {
-    QMap<QString, QStringList> result;
+    QMap<QString, QStringList> result = {};
 
     foreach (QString docx, docxs)
     {
         QFile file(path + docx + ".txt");
 
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            // todo
+            emit TroubleWithDoc(docx);
         }
 
         QTextStream in(&file);

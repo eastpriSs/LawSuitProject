@@ -7,9 +7,10 @@
 class DirTemplateParser : public ITemplateRepository
 {
     Q_OBJECT
+    QString templatesPath;
 public:
-    explicit DirTemplateParser(QObject *parent = nullptr);
-    QStringList getTemplates(const QString&) override;
+    explicit DirTemplateParser(const QString& path, QObject *parent = nullptr);
+    QStringList getTemplates() override;
 signals:
 };
 

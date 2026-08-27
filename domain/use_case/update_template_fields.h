@@ -1,25 +1,21 @@
-#ifndef UPDATE_TEMPLATE_FIELDS_H
-#define UPDATE_TEMPLATE_FIELDS_H
-
+#pragma once
 #include <QObject>
 #include <QMap>
+#include <QStringList>
 
 class ITemplateFieldsRepository;
-class UpdateTemplateFields : public QObject
-{
+
+class UpdateTemplateFields : public QObject {
     Q_OBJECT
+    ITemplateFieldsRepository* repo;
+
 public:
     explicit UpdateTemplateFields(ITemplateFieldsRepository* r, QObject *parent = nullptr);
-    QMap<QString, QStringList> operator()(const QString& path, const QStringList& docxs);
-
-private slots:
-    void onTroubleWithDoc(QString docx);
-
-private:
-    ITemplateFieldsRepository* repo;
+    QMap<QString, QStringList> operator()(const QStringList &docxs);
 
 signals:
     void CannotUpdateFieldsForDoc(QString docx);
-};
 
-#endif // UPDATE_TEMPLATE_FIELDS_H
+private slots:
+    void onTroubleWithDoc(QString docx);
+};

@@ -1,16 +1,13 @@
-#ifndef I_TEMPLATE_FIELDS_REPOSITORY_H
-#define I_TEMPLATE_FIELDS_REPOSITORY_H
-
+#pragma once
+#include <QMap>
 #include <QObject>
+#include <QStringList>
 
-class ITemplateFieldsRepository : public QObject
-{
+class ITemplateFieldsRepository : public QObject {
     Q_OBJECT
 public:
-    explicit ITemplateFieldsRepository(QObject *parent = nullptr);
-    virtual QMap<QString, QStringList> getTemplateFieldsMap(const QString path, const QStringList docxs) = 0;
+    virtual ~ITemplateFieldsRepository() = default;
+    virtual QMap<QString, QStringList> getTemplateFieldsMap(const QStringList &docxs) = 0;
 signals:
-    void TroubleWithDoc(QString doc);
+    void TroubleWithDocx(QString docx);
 };
-
-#endif // I_TEMPLATE_FIELDS_REPOSITORY_H

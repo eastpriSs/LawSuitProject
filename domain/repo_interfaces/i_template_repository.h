@@ -8,7 +8,7 @@ class ITemplateRepository : public QObject
     Q_OBJECT
 public:
     explicit ITemplateRepository(QObject *parent = nullptr);
-    virtual QStringList getTemplates(const QString&) = 0;
+    virtual QStringList getTemplates() = 0;
     virtual ~ITemplateRepository() = default;
 signals:
 };

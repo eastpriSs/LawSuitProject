@@ -5,14 +5,13 @@
 #include <QMap>
 #include "../domain/repo_interfaces/i_template_fields_repository.h"
 
-class TemplateFieldsTxtParser : public ITemplateFieldsRepository
-{
+class TemplateFieldsTxtParser : public ITemplateFieldsRepository {
     Q_OBJECT
-public:
-    explicit TemplateFieldsTxtParser(QObject *parent = nullptr);
-    QMap<QString, QStringList> getTemplateFieldsMap(const QString path, const QStringList docxs) override;
+    QString fieldsPath;
 
-signals:
+public:
+    explicit TemplateFieldsTxtParser(const QString& path, QObject *parent = nullptr);
+    QMap<QString, QStringList> getTemplateFieldsMap(const QStringList &docxs) override;
 };
 
 #endif // TXT_TEMPLATE_FILEDS_PARSER_H

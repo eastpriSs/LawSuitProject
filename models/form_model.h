@@ -3,11 +3,11 @@
 
 #include <QObject>
 #include <QMap>
+#include <QSet>
 #include "../domain/use_case/update_template_list.h"
 #include "../domain/use_case/update_template_fields.h"
 
-class FormModel : public QObject
-{
+class FormModel : public QObject {
     Q_OBJECT
 public:
     explicit FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, QObject *parent = nullptr);

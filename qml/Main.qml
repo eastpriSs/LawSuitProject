@@ -122,7 +122,7 @@ ApplicationWindow {
                         RowLayout {
                             Layout.fillWidth: true
                             spacing: StyleManager.spacingSmall
-                            TextField { id: caseNameInput; placeholderText: "Название или суть дела"; Layout.fillWidth: true }
+                            TextField { id: caseNameInput; placeholderText: "Название"; Layout.fillWidth: true }
                             TextField { id: caseIDInput; placeholderText: "Рег. номер"; Layout.preferredWidth: 180 }
                         }
 

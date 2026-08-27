@@ -1,23 +1,22 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <QDir>
 #include "txt_template_fileds_parser.h"
 
-TemplateFieldsTxtParser::TemplateFieldsTxtParser(QObject *parent)
-    : ITemplateFieldsRepository{parent}
+TemplateFieldsTxtParser::TemplateFieldsTxtParser(const QString& path, QObject *parent)
+    : fieldsPath(path)
 {}
 
-QMap<QString, QStringList> TemplateFieldsTxtParser::getTemplateFieldsMap(const QString path, const QStringList docxs)
+QMap<QString, QStringList> TemplateFieldsTxtParser::getTemplateFieldsMap(const QStringList &docxs)
 {
     QMap<QString, QStringList> result = {};
 
-    foreach (QString docx, docxs)
-    {
-        QFile file(path + docx + ".txt");
+    foreach (QString docx, docxs) {
+        QFile file(fieldsPath + docx + ".txt");
 
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            emit TroubleWithDoc(docx);
+            emit TroubleWithDocx(file.filesystemFileName().c_str());
+            continue;
         }
 
         QTextStream in(&file);

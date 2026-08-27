@@ -11,17 +11,17 @@ FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFie
             this, &FormModel::onPathError);
     connect(updateTemplates, &UpdateTemplateList::templatesError,
             this, &FormModel::onTemplatesError);
-
 }
+
 void FormModel::templatesRequested()
 {
-    QString testDir = "/home/eastpris/LawsuitProject/templates/";
-    QStringList templates = (*updateTemplates)(testDir);
+    QStringList templates = (*updateTemplates)();
+
     foreach (QString i, templates) {
         checkedTemplates.insert(i, false);
     }
     emit templatesGot(templates);
-    templatesFields = (*updateTemplatesFields)("/home/eastpris/LawsuitProject/settings/fileds_to_fill/", templates);
+    templatesFields = (*updateTemplatesFields)(templates);
     qInfo() << templatesFields;
 }
 
@@ -39,13 +39,13 @@ void FormModel::templateChecked(const QString &name, bool checked)
 
 void FormModel::onPathError(QString p)
 {
-    errorMasseageRequested("Загрузка полей", "Путь к полям неверен: " + p);
+    emit errorMasseageRequested("Загрузка полей", "Путь к полям неверен: " + p);
     emit appStateSwitchRequested("Функционал ограничен");
 }
 
 void FormModel::onTemplatesError(QString err)
 {
-    errorMasseageRequested("Загрузка шаблонов", "Произошла  ошибка при загрузки шаблонов: " + err);
+    emit errorMasseageRequested("Загрузка шаблонов", "Произошла ошибка при загрузке шаблонов: " + err);
     emit appStateSwitchRequested("Функционал ограничен");
 }
 

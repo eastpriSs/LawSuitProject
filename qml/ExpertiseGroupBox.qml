@@ -14,6 +14,7 @@ CustomGroupBox {
     property alias travelCost: travelField.text
     property alias totalCost: totalField.text
     property alias dateButtonText: expDateButton.text
+    property alias expertCurrentText: expertCombo.currentText
 
     GridLayout {
         anchors.fill: parent

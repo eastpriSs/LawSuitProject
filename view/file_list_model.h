@@ -36,6 +36,7 @@ public:
     Q_INVOKABLE void removeItem(int row);
     Q_INVOKABLE void setItemChecked(int row, bool checked);
     Q_INVOKABLE void clearModel();
+    Q_INVOKABLE QStringList getCheckedFiles();
 
     void setItems(const QVector<FileItem> &items);
     void updateNote(QString name, QString note);

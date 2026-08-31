@@ -5,12 +5,13 @@
 #include <QMap>
 #include "../domain/use_case/update_template_list.h"
 #include "../domain/use_case/update_template_fields.h"
+#include "../domain/use_case/save_files.h"
 
 class FormModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, QObject *parent = nullptr);
+    explicit FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, SaveFiles* sf, QObject *parent = nullptr);
     void templatesRequested();
 
 signals:
@@ -22,6 +23,7 @@ signals:
 
 public slots:
     void templateChecked(const QString &name, bool checked);
+    void saveRequested(QString dist, QStringList files, const QVariantMap &formData);
 
 private slots:
     void onCannotUpdateFieldsForDoc(QString doc);
@@ -29,10 +31,11 @@ private slots:
     void onTemplatesError(QString err);
 
 private:
-    UpdateTemplateList* updateTemplates;
-    UpdateTemplateFields* updateTemplatesFields;
     QMap<QString, QStringList> templatesFields;
     QMap<QString, bool> checkedTemplates;
+    UpdateTemplateList* updateTemplates;
+    UpdateTemplateFields* updateTemplatesFields;
+    SaveFiles* saveFiles;
 };
 
 #endif // FORM_MODEL_H

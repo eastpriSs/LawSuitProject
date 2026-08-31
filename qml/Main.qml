@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import Qt.labs.platform 1.1 as Platform
 
 ApplicationWindow {
     width: 850
@@ -10,6 +11,54 @@ ApplicationWindow {
     title: qsTr("Lawsuit Pro")
     color: StyleManager.background
 
+    Platform.FolderDialog {
+        id: folderDialog
+        title: "Выберите папку для сохранения"
+        onAccepted: {
+
+            var formData = {
+            main: {
+                caseName: caseNameInput.text,
+                caseID: caseIDInput.text,
+                dateReceived: dateButton.text,
+                judgeName: lawyerNameInput.text,
+                judgePhone: lawyerNumberInput.text,
+                courtType: courtTypeCombo.currentText,
+                courtAddress: courtAddressCombo.currentText
+            },
+            plaintiff: {
+                name: plaintiffBox.plaintiffName,
+                address: plaintiffBox.plaintiffAddress,
+                phone: plaintiffBox.plaintiffPhone,
+                representative: plaintiffBox.plaintiffRep
+            },
+            defendant: {
+                name: defendantBox.defendantName,
+                address: defendantBox.defendantAddress,
+                phone: defendantBox.defendantPhone,
+                representative: defendantBox.defendantRep
+            },
+            expertise: {
+                type: expertiseBox.expertiseType,
+                subject: expertiseBox.expertiseSubject,
+                expert: expertiseBox.expertCurrentText,
+                dueDate: expertiseBox.dateButtonText,
+                travelCost: expertiseBox.travelCost,
+                totalCost: expertiseBox.totalCost
+            }
+        };
+
+            var folderPath = folderDialog.folder.toString()
+            folderPath = folderPath.replace(/^file:\/\//, "")
+            console.log("Выбрана папка:", folderPath)
+            if (folderPath === "") {
+                console.warn("Путь пустой")
+                return
+            }
+            var files = FileModel.getCheckedFiles()
+            Presenter.saveRequested(folderPath, files, formData)
+        }
+    }
 
     Dialog {
         id: errorDialog
@@ -177,6 +226,7 @@ ApplicationWindow {
                             Layout.fillWidth: true
                             spacing: StyleManager.spacingSmall
                             ComboBox {
+                                id: courtTypeCombo
                                 model: ["Арбитражный", "Мировой", "Районный"]
                                 Layout.fillWidth: true
                             }
@@ -187,6 +237,7 @@ ApplicationWindow {
                                 font.weight: Font.Normal
                             }
                             ComboBox {
+                                id: courtAddressCombo
                                 model: ["ул. Ленина, 1", "пр. Мира, 45"]
                                 Layout.preferredWidth: StyleManager.phoneWidth
                             }
@@ -194,9 +245,9 @@ ApplicationWindow {
                     }
                 }
 
-                PlaintiffGroupBox { Layout.fillWidth: true }
-                DefendantGroupBox { Layout.fillWidth: true }
-                ExpertiseGroupBox { id: expertiseBox; Layout.fillWidth: true;  }
+                PlaintiffGroupBox { id: plaintiffBox; Layout.fillWidth: true }
+                DefendantGroupBox { id: defendantBox; Layout.fillWidth: true }
+                ExpertiseGroupBox { id: expertiseBox; Layout.fillWidth: true }
 
                 DatePickerPopup {
                     id: mainDatePicker
@@ -230,6 +281,7 @@ ApplicationWindow {
                 ActionButtons {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 3 * StyleManager.buttonHeight + 2 * StyleManager.spacingTiny
+                    onSaveClicked: folderDialog.open()
                 }
             }
         }

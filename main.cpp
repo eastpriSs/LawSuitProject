@@ -15,8 +15,11 @@
 #include "models/form_model.h"
 #include "domain/use_case/update_template_list.h"
 #include "domain/use_case/update_template_fields.h"
+#include "domain/use_case/save_files.h"
 #include "data/dir_template_parser.h"
 #include "data/txt_template_fileds_parser.h"
+#include "data/xml_tags_replacer.h"
+#include "data/file_saver.h"
 #include "view/highlight.h"
 #include "view/error_handler.h"
 
@@ -128,14 +131,19 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("StyleManager", &styleManager);
     engine.rootContext()->setContextProperty("FileModel", &fileModel);
 
-    engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
-
     DirTemplateParser dirParser;
     TemplateFieldsTxtParser txtParser;
+    XmlTagsReplacer replacer;
+    FileSaver fs;
+
+    SaveFiles saveFiles(&fs, &replacer);
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
-    FormModel model(&updateTemplates, &updateTemplatesFields);
+    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles);
     FormPresenter presenter(&fileModel, &model, &highlight, &errorHandler);
+
+    engine.rootContext()->setContextProperty("Presenter", &presenter);
+    engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
 
     return app.exec();
 }

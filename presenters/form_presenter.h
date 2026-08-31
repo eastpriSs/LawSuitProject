@@ -14,6 +14,9 @@ public:
     explicit FormPresenter(FileListModel* view, FormModel* model,
                            Highlight* highlight, ErrorHandler* errHandler, QObject *parent = nullptr);
 
+public slots:
+    void saveRequested(QString dist, QStringList files, const QVariantMap &formData);
+
 private:
     FileListModel* view;
     FormModel* model;

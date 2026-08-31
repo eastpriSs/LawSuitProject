@@ -1,9 +1,12 @@
-#include "form_model.h"
+
 #include <QDebug>
 #include <QSet>
 
-FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, QObject *parent)
-    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields)
+#include "form_model.h"
+#include "../domain/entity/form_data_map.h"
+
+FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, SaveFiles* sf, QObject *parent)
+    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields), saveFiles(sf)
 {
     connect(updateTemplatesFields, &UpdateTemplateFields::CannotUpdateFieldsForDoc,
             this, &FormModel::onCannotUpdateFieldsForDoc);
@@ -35,6 +38,14 @@ void FormModel::templateChecked(const QString &name, bool checked)
         }
         emit highlightFieldsRequested(fields);
     }
+}
+
+void FormModel::saveRequested(QString dist, QStringList files, const QVariantMap &formData)
+{
+    FormDataMap map;
+    map.parse(formData);
+    qInfo() << "Save requested to " << dist << " with " << files;
+    (*saveFiles)(dist, files, map);
 }
 
 void FormModel::onPathError(QString p)

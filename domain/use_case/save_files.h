@@ -12,6 +12,9 @@ class SaveFiles : public QObject
 public:
     explicit SaveFiles(IFileSaverRepository* r, IFilesProccessorRepository* p, QObject *parent = nullptr);
     void operator()(QString dist, QStringList files, const FormDataMap& formData);
+private:
+    QString makeDirName(const FormDataMap& formData) const;
+
 signals:
 private:
     IFileSaverRepository* fileStorage;

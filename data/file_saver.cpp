@@ -1,10 +1,10 @@
 #include <QDir>
 #include "file_saver.h"
 
-void FileSaver::saveFiles(QString dist, QList<ProccessedFile> files)
+void FileSaver::saveFiles(QString dist, QString dirName, QList<ProccessedFile> files)
 {
-    QDir subDirDist;
-    subDirDist.mkdir(dist);
+    QString testPath = dist + "/" + dirName;
+    QDir().mkpath(testPath);
 
     for (const ProccessedFile &file : files) {
         if (file.content().isEmpty()) {
@@ -12,7 +12,8 @@ void FileSaver::saveFiles(QString dist, QList<ProccessedFile> files)
             continue;
         }
 
-        QString filePath = dist + "/" + file.fileName();
+        QString filePath = testPath + "/" + file.fileName();
+        qInfo() << filePath;
         QFile f(filePath);
         if (!f.open(QIODevice::WriteOnly)) {
             qWarning() << "Cannot open file for writing:" << filePath;

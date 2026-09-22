@@ -7,7 +7,7 @@ class FileSaver : public IFileSaverRepository
 {
 public:
     FileSaver() = default;
-    void saveFiles(QString dist, QList<ProccessedFile> files) override;
+    void saveFiles(QString dist, QString dirName, QList<ProccessedFile> files) override;
 };
 
 #endif // FILE_SAVER_H

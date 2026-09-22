@@ -5,9 +5,35 @@
 #include <quazip.h>
 #include <quazipfile.h>
 
+
+static void replacePlaceholders(QDomDocument& doc, const QMap<QString, QString> &placeholders)
+{
+    const QString tag = "t";
+    const QString WORDML_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+
+    QDomNodeList tNodes = doc.elementsByTagNameNS(WORDML_NS, tag);
+    for (int i = 0; i < tNodes.count(); ++i) {
+        QDomElement tElem = tNodes.at(i).toElement();
+        QString text = tElem.text();
+        qInfo() << text;
+        bool changed = false;
+        for (auto it = placeholders.cbegin(); it != placeholders.cend(); ++it) {
+            const QString placeholder = QStringLiteral("{{%1}}").arg(it.key());
+            if (text.contains(placeholder)) {
+                text.replace(placeholder, it.value());
+                changed = true;
+            }
+        }
+        if (changed) {
+            while (tElem.hasChildNodes())
+                tElem.removeChild(tElem.firstChild());
+            tElem.appendChild(doc.createTextNode(text));
+        }
+    }
+}
+
 static QByteArray replaceInDocx(const QString &_templatePath, const QMap<QString, QString> &placeholders)
 {
-    const QString WORDML_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
 
     QString templatePath = "templates/" + _templatePath; // todo
 
@@ -39,27 +65,7 @@ static QByteArray replaceInDocx(const QString &_templatePath, const QMap<QString
         return QByteArray();
     }
 
-    // 3. Заменить плейсхолдеры вида {{key}} во всех текстовых узлах
-    QDomNodeList tNodes = doc.elementsByTagNameNS(WORDML_NS, "t");
-    qInfo() << tNodes.count();
-    for (int i = 0; i < tNodes.count(); ++i) {
-        QDomElement tElem = tNodes.at(i).toElement();
-        QString text = tElem.text();
-        qInfo() << text;
-        bool changed = false;
-        for (auto it = placeholders.cbegin(); it != placeholders.cend(); ++it) {
-            const QString placeholder = QStringLiteral("{{%1}}").arg(it.key());
-            if (text.contains(placeholder)) {
-                text.replace(placeholder, it.value());
-                changed = true;
-            }
-        }
-        if (changed) {
-            while (tElem.hasChildNodes())
-                tElem.removeChild(tElem.firstChild());
-            tElem.appendChild(doc.createTextNode(text));
-        }
-    }
+    replacePlaceholders(doc, placeholders);
 
     // 4. Создать новый ZIP в памяти с обновлённым document.xml
     QBuffer buffer;
@@ -116,6 +122,5 @@ static QByteArray replaceInDocx(const QString &_templatePath, const QMap<QString
 
 ProccessedFile XmlTagsReplacer::proccess(const QString &file, const FormDataMap &data)
 {
-    QByteArray processedContent = replaceInDocx(file, data.toPlaceholderMap());
-    return ProccessedFile{processedContent, file};
+    return ProccessedFile{replaceInDocx(file, data.toPlaceholderMap()), file};
 }

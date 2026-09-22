@@ -8,37 +8,37 @@ bool FormDataMap::parse(const QVariantMap &formData)
     }
 
     // --- Основная информация ---
-    QVariantMap mainMap = formData["main"].toMap();
-    m_data.main.caseName       = mainMap.value("caseName").toString();
-    m_data.main.caseID         = mainMap.value("caseID").toString();
-    m_data.main.dateReceived   = mainMap.value("dateReceived").toString();
-    m_data.main.judgeName      = mainMap.value("judgeName").toString();
-    m_data.main.judgePhone     = mainMap.value("judgePhone").toString();
-    m_data.main.courtType      = mainMap.value("courtType").toString();
-    m_data.main.courtAddress   = mainMap.value("courtAddress").toString();
+    QVariantMap tempMap = formData["main"].toMap();
+    m_data.main.caseName       = tempMap.value("caseName").toString();
+    m_data.main.caseID         = tempMap.value("caseID").toString();
+    m_data.main.dateReceived   = tempMap.value("dateReceived").toString();
+    m_data.main.judgeName      = tempMap.value("judgeName").toString();
+    m_data.main.judgePhone     = tempMap.value("judgePhone").toString();
+    m_data.main.courtType      = tempMap.value("courtType").toString();
+    m_data.main.courtAddress   = tempMap.value("courtAddress").toString();
 
     // --- Истец ---
-    QVariantMap plaintiffMap = formData["plaintiff"].toMap();
-    m_data.plaintiff.name           = plaintiffMap.value("name").toString();
-    m_data.plaintiff.address        = plaintiffMap.value("address").toString();
-    m_data.plaintiff.phone          = plaintiffMap.value("phone").toString();
-    m_data.plaintiff.representative = plaintiffMap.value("representative").toString();
+    tempMap = formData["plaintiff"].toMap();
+    m_data.plaintiff.name           = tempMap.value("name").toString();
+    m_data.plaintiff.address        = tempMap.value("address").toString();
+    m_data.plaintiff.phone          = tempMap.value("phone").toString();
+    m_data.plaintiff.representative = tempMap.value("representative").toString();
 
     // --- Ответчик ---
-    QVariantMap defendantMap = formData["defendant"].toMap();
-    m_data.defendant.name           = defendantMap.value("name").toString();
-    m_data.defendant.address        = defendantMap.value("address").toString();
-    m_data.defendant.phone          = defendantMap.value("phone").toString();
-    m_data.defendant.representative = defendantMap.value("representative").toString();
+    tempMap = formData["defendant"].toMap();
+    m_data.defendant.name           = tempMap.value("name").toString();
+    m_data.defendant.address        = tempMap.value("address").toString();
+    m_data.defendant.phone          = tempMap.value("phone").toString();
+    m_data.defendant.representative = tempMap.value("representative").toString();
 
     // --- Экспертиза ---
-    QVariantMap expertiseMap = formData["expertise"].toMap();
-    m_data.expertise.type       = expertiseMap.value("type").toString();
-    m_data.expertise.subject    = expertiseMap.value("subject").toString();
-    m_data.expertise.expert     = expertiseMap.value("expert").toString();
-    m_data.expertise.dueDate    = expertiseMap.value("dueDate").toString();
-    m_data.expertise.travelCost = expertiseMap.value("travelCost").toString();
-    m_data.expertise.totalCost  = expertiseMap.value("totalCost").toString();
+    tempMap = formData["expertise"].toMap();
+    m_data.expertise.type       = tempMap.value("type").toString();
+    m_data.expertise.subject    = tempMap.value("subject").toString();
+    m_data.expertise.expert     = tempMap.value("expert").toString();
+    m_data.expertise.dueDate    = tempMap.value("dueDate").toString();
+    m_data.expertise.travelCost = tempMap.value("travelCost").toString();
+    m_data.expertise.totalCost  = tempMap.value("totalCost").toString();
 
     return true;
 }

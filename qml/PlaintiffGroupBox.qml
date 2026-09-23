@@ -6,6 +6,10 @@ CustomGroupBox {
     title: "Истец"
 
     readonly property bool isHighlightNeeded: Highlight.activeFields.indexOf(title) !== -1
+    property alias plaintiffName: plaintiffNameField.text
+    property alias plaintiffAddress: plaintiffAddressField.text
+    property alias plaintiffPhone: plaintiffPhoneField.text
+    property alias plaintiffRep: plaintiffRepField.text
 
     GridLayout {
         anchors.fill: parent

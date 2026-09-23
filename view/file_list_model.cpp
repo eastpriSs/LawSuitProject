@@ -93,6 +93,16 @@ void FileListModel::clearModel()
     emit countChanged();
 }
 
+QStringList FileListModel::getCheckedFiles()
+{
+    QStringList checked;
+    foreach (FileItem file, m_items) {
+        if (file.checked)
+            checked.append(file.name);
+    }
+    return checked;
+}
+
 void FileListModel::setItems(const QVector<FileItem> &items)
 {
     beginResetModel();

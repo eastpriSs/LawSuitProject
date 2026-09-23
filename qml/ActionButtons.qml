@@ -10,6 +10,8 @@ ColumnLayout {
     spacing: StyleManager.spacingTiny
     Layout.fillWidth: true
 
+    signal saveClicked()
+
     Button {
         id: saveBtn
         Layout.fillWidth: true
@@ -34,6 +36,8 @@ ColumnLayout {
             Text { text: "💾"; font.pixelSize: 18; color: StyleManager.white; Layout.preferredWidth: 24 }
             Text { text: qsTr("Сохранить"); font.pixelSize: StyleManager.fontSizeNormal; font.weight: Font.DemiBold; color: StyleManager.white; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
         }
+
+        onClicked: saveClicked()
     }
 
     Button {

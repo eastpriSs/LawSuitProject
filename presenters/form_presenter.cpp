@@ -12,3 +12,8 @@ FormPresenter::FormPresenter(FileListModel *view, FormModel *model,
     connect(model, &FormModel::appStateSwitchRequested, errHandler, &ErrorHandler::setAppState);
     model->templatesRequested();
 }
+
+void FormPresenter::saveRequested(QString dist, QStringList files, const QVariantMap &formData)
+{
+    model->saveRequested(std::move(dist), std::move(files), formData);
+}

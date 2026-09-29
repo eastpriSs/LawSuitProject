@@ -9,7 +9,7 @@
     QStringList filters;
     filters << "*.docx" << "*.doc";
     dir.setNameFilters(filters);
-
+    qInfo() << dir.absolutePath();
     QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
     return files;
 }

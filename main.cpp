@@ -41,13 +41,6 @@ int main(int argc, char *argv[])
     Highlight highlight;
     ErrorHandler errorHandler;
 
-    engine.rootContext()->setContextProperty("errorHandler", &errorHandler);
-    engine.rootContext()->setContextProperty("Highlight", &highlight);
-    engine.rootContext()->setContextProperty("StyleManager", &styleManager);
-    engine.rootContext()->setContextProperty("FileModel", &fileModel);
-
-    engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
-
     JsonConfigReader configRepo;
     LoadAppConfig loadConfigUseCase(&configRepo);
     AppConfig appConfig = loadConfigUseCase();
@@ -61,16 +54,22 @@ int main(int argc, char *argv[])
     XmlTagsReplacer replacer;
     FileSaver fs;
 
+    QString appLoc = app.applicationFilePath();
+    appLoc.erase(appLoc.begin() + appLoc.lastIndexOf("/"), appLoc.end());
+    qInfo() << "Root dir of app location:" << appLoc;
+
     SaveFiles saveFiles(&fs, &replacer);
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
-
     FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles);
-
     FormPresenter presenter(&fileModel, &model, &highlight, &errorHandler);
 
+    engine.rootContext()->setContextProperty("errorHandler", &errorHandler);
+    engine.rootContext()->setContextProperty("Highlight", &highlight);
+    engine.rootContext()->setContextProperty("StyleManager", &styleManager);
+    engine.rootContext()->setContextProperty("FileModel", &fileModel);
     engine.rootContext()->setContextProperty("Presenter", &presenter);
-    engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
 
+    engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
     return app.exec();
 }

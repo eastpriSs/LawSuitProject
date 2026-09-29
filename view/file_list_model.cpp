@@ -113,9 +113,11 @@ void FileListModel::setItems(const QVector<FileItem> &items)
 
 void FileListModel::updateNote(QString name, QString note)
 {
-    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
-        if (i->name == name) {
-            i->note = note;
+    for (int row = 0; row < m_items.size(); ++row) {
+        if (m_items[row].name == name) {
+            m_items[row].note = note;
+            QModelIndex idx = index(row);
+            emit dataChanged(idx, idx, { NumberRole });
             return;
         }
     }

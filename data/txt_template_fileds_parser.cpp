@@ -13,9 +13,9 @@ QMap<QString, QStringList> TemplateFieldsTxtParser::getTemplateFieldsMap(const Q
 
     foreach (QString docx, docxs) {
         QFile file(fieldsPath + docx + ".txt");
-
+        qInfo() << file.filesystemFileName().c_str();
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            emit TroubleWithDocx(file.filesystemFileName().c_str());
+            emit TroubleWithDocx(docx);
             continue;
         }
 

@@ -24,6 +24,7 @@ signals:
 public slots:
     void templateChecked(const QString &name, bool checked);
     void saveRequested(QString dist, QStringList files, const QVariantMap &formData);
+    void loadRequested(QString file);
 
 private slots:
     void onCannotUpdateFieldsForDoc(QString doc);

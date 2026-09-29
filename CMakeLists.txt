@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Xml)
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(QuaZip-Qt6 REQUIRED)
 
 qt_add_executable(Lawsuit
@@ -53,6 +54,8 @@ qt_add_qml_module(Lawsuit
         SOURCES domain/repo_interfaces/i_files_proccessor_repository.h domain/repo_interfaces/i_files_proccessor_repository.cpp
         SOURCES domain/entity/proccessed_file.h domain/entity/proccessed_file.cpp
         SOURCES domain/entity/form_data_map.h domain/entity/form_data_map.cpp
+        SOURCES domain/repo_interfaces/i_recovery_file_maker.h domain/repo_interfaces/i_recovery_file_maker.cpp
+        SOURCES data/json_recovery_file_maker.h data/json_recovery_file_maker.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -71,6 +74,7 @@ target_link_libraries(Lawsuit
             Qt6::Xml
             QuaZip::QuaZip
 )
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 
 

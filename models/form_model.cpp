@@ -48,6 +48,11 @@ void FormModel::saveRequested(QString dist, QStringList files, const QVariantMap
     (*saveFiles)(dist, files, map);
 }
 
+void FormModel::loadRequested(QString file)
+{
+
+}
+
 void FormModel::onPathError(QString p)
 {
     emit errorMasseageRequested("Загрузка полей", "Путь к полям неверен: " + p);

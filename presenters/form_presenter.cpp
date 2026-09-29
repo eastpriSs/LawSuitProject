@@ -17,3 +17,8 @@ void FormPresenter::saveRequested(QString dist, QStringList files, const QVarian
 {
     model->saveRequested(std::move(dist), std::move(files), formData);
 }
+
+void FormPresenter::loadRequested(QString file)
+{
+    model->loadRequested(std::move(file));
+}

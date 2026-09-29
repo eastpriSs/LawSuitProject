@@ -16,6 +16,7 @@ public:
 
 public slots:
     void saveRequested(QString dist, QStringList files, const QVariantMap &formData);
+    void loadRequested(QString file);
 
 private:
     FileListModel* view;

@@ -2,6 +2,8 @@
 
 bool FormDataMap::parse(const QVariantMap &formData)
 {
+    m_raw = formData;
+
     if (!formData.contains("main") || !formData.contains("plaintiff") ||
         !formData.contains("defendant") || !formData.contains("expertise")) {
         return false;

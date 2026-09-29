@@ -11,6 +11,18 @@ ApplicationWindow {
     title: qsTr("Lawsuit Pro")
     color: StyleManager.background
 
+
+    // todo убрать и сделать FolderDialog с автоматическим нахождением recovery.json
+    Platform.FileDialog {
+        id: fileDialog
+        title: "Выберите файл для заполнения формы"
+        onAccepted: {
+            var filePath = fileDialog.file.toString();
+            Presenter.loadRequested(filePath);
+        }
+
+    }
+
     Platform.FolderDialog {
         id: folderDialog
         title: "Выберите папку для сохранения"
@@ -46,7 +58,7 @@ ApplicationWindow {
                 travelCost: expertiseBox.travelCost,
                 totalCost: expertiseBox.totalCost
             }
-        };
+            };
 
             var folderPath = folderDialog.folder.toString()
             folderPath = folderPath.replace(/^file:\/\//, "")
@@ -282,6 +294,7 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 3 * StyleManager.buttonHeight + 2 * StyleManager.spacingTiny
                     onSaveClicked: folderDialog.open()
+                    onLoadClicked: fileDialog.open()
                 }
             }
         }

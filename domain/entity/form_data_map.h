@@ -43,9 +43,11 @@ public:
     bool parse(const QVariantMap &formData);
     LawsuitData getData() const { return m_data; }
     QMap<QString, QString> toPlaceholderMap() const;
+    QVariantMap raw() const { return m_raw; }
 
 private:
     LawsuitData m_data;
+    QVariantMap m_raw;
 };
 
 #endif // FORM_DATA_MAP_H

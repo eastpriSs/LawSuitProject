@@ -11,6 +11,7 @@ ColumnLayout {
     Layout.fillWidth: true
 
     signal saveClicked()
+    signal loadClicked()
 
     Button {
         id: saveBtn
@@ -63,6 +64,8 @@ ColumnLayout {
             Text { text: "📂"; font.pixelSize: 18; color: StyleManager.white; Layout.preferredWidth: 24 }
             Text { text: qsTr("Загрузить"); font.pixelSize: StyleManager.fontSizeNormal; font.weight: Font.DemiBold; color: StyleManager.white; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true }
         }
+
+        onClicked: loadClicked()
     }
 
     Button {

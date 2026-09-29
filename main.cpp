@@ -30,6 +30,7 @@
 #include "data/json_config_reader.h"
 #include "data/dir_template_parser.h"
 #include "data/txt_template_fileds_parser.h"
+#include "data/json_recovery_file_maker.h"
 
 int main(int argc, char *argv[])
 {
@@ -53,12 +54,13 @@ int main(int argc, char *argv[])
     TemplateFieldsTxtParser txtParser(appConfig.fieldsPath);
     XmlTagsReplacer replacer;
     FileSaver fs;
+    JsonRecoveryFileMaker jsonRecoveryMaker; // todo in constructor add QString filename
 
     QString appLoc = app.applicationFilePath();
     appLoc.erase(appLoc.begin() + appLoc.lastIndexOf("/"), appLoc.end());
     qInfo() << "Root dir of app location:" << appLoc;
 
-    SaveFiles saveFiles(&fs, &replacer);
+    SaveFiles saveFiles(&fs, &replacer, &jsonRecoveryMaker);
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
     FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles);

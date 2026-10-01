@@ -12,3 +12,16 @@ ProccessedFile JsonRecoveryFileMaker::make(const FormDataMap& formData) const
         "recovery.json"
         );
 }
+
+FormDataMap JsonRecoveryFileMaker::deserialize(const QByteArray &content) const
+{
+    QJsonParseError err{};
+    const QJsonDocument doc = QJsonDocument::fromJson(content, &err);
+    if (err.error != QJsonParseError::NoError || !doc.isObject()) {
+        return {};
+    }
+
+    FormDataMap fd;
+    fd.parse(doc.object().toVariantMap());
+    return fd;
+}

@@ -18,6 +18,7 @@ ApplicationWindow {
         title: "Выберите файл для заполнения формы"
         onAccepted: {
             var filePath = fileDialog.file.toString();
+            filePath = filePath.replace(/^file:\/\//, "")
             Presenter.loadRequested(filePath);
         }
 
@@ -61,9 +62,9 @@ ApplicationWindow {
             };
 
             var folderPath = folderDialog.folder.toString()
-            folderPath = folderPath.replace(/^file:\/\//, "")
+            folderPath = folderPath.replace(/^file:\/\//, "") // todo: move to model side
             console.log("Выбрана папка:", folderPath)
-            if (folderPath === "") {
+            if (folderPath === "") { // todo: move to model side
                 console.warn("Путь пустой")
                 return
             }
@@ -95,6 +96,42 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: Presenter
+
+        function onSuitDataLoaded(formData) {
+            // main
+            caseNameInput.text       = formData.main.caseName
+            caseIDInput.text         = formData.main.caseID
+            dateButton.text          = formData.main.dateReceived
+            lawyerNameInput.text     = formData.main.judgeName
+            lawyerNumberInput.text   = formData.main.judgePhone
+            courtTypeCombo.currentIndex = courtTypeCombo.find(formData.main.courtType)
+            courtAddressCombo.currentIndex = courtAddressCombo.find(formData.main.courtAddress)
+
+            // plaintiff
+            plaintiffBox.plaintiffName    = formData.plaintiff.name
+            plaintiffBox.plaintiffAddress = formData.plaintiff.address
+            plaintiffBox.plaintiffPhone   = formData.plaintiff.phone
+            plaintiffBox.plaintiffRep     = formData.plaintiff.representative
+
+            // defendant
+            defendantBox.defendantName    = formData.defendant.name
+            defendantBox.defendantAddress = formData.defendant.address
+            defendantBox.defendantPhone   = formData.defendant.phone
+            defendantBox.defendantRep     = formData.defendant.representative
+
+            // expertise
+            expertiseBox.expertiseType        = formData.expertise.type
+            expertiseBox.expertiseSubject     = formData.expertise.subject
+            expertiseBox.dateButtonText       = formData.expertise.dueDate
+            expertiseBox.travelCost           = formData.expertise.travelCost
+            expertiseBox.totalCost            = formData.expertise.totalCost
+            var idx = expertiseBox.expertModel.indexOf(formData.expertise.expert)
+            if (idx !== -1)
+                expertiseBox.expertCurrentIndex = idx
+        }
+    }
 
     ScrollView {
         id: scrollView

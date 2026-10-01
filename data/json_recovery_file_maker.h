@@ -9,6 +9,7 @@ public:
     using IRecoveryFileMaker::IRecoveryFileMaker;
 
     ProccessedFile make(const FormDataMap& formData) const override;
+    FormDataMap deserialize(const QByteArray& content) const override;
 };
 
 #endif // JSON_RECOVERY_FILE_MAKER_H

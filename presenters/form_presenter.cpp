@@ -10,6 +10,7 @@ FormPresenter::FormPresenter(FileListModel *view, FormModel *model,
     connect(model, &FormModel::errorNoteRequested, view, &FileListModel::updateNote);
     connect(model, &FormModel::errorMasseageRequested, errHandler, &ErrorHandler::handleError);
     connect(model, &FormModel::appStateSwitchRequested, errHandler, &ErrorHandler::setAppState);
+    connect(model, &FormModel::suitDataLoaded, this,  &FormPresenter::suitDataLoaded);
     model->templatesRequested();
 }
 

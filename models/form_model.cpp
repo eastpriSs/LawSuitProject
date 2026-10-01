@@ -5,8 +5,8 @@
 #include "form_model.h"
 #include "../domain/entity/form_data_map.h"
 
-FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, SaveFiles* sf, QObject *parent)
-    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields), saveFiles(sf)
+FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, SaveFiles* sf, LoadSuit* ls, QObject *parent)
+    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields), saveFiles(sf), loadSuit(ls)
 {
     connect(updateTemplatesFields, &UpdateTemplateFields::CannotUpdateFieldsForDoc,
             this, &FormModel::onCannotUpdateFieldsForDoc);
@@ -14,6 +14,8 @@ FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFie
             this, &FormModel::onPathError);
     connect(updateTemplates, &UpdateTemplateList::templatesError,
             this, &FormModel::onTemplatesError);
+    connect(loadSuit, &LoadSuit::SuitLoaded,
+            this, &FormModel::onSuitLoaded);
 }
 
 void FormModel::templatesRequested()
@@ -50,7 +52,7 @@ void FormModel::saveRequested(QString dist, QStringList files, const QVariantMap
 
 void FormModel::loadRequested(QString file)
 {
-
+    (*loadSuit)(file);
 }
 
 void FormModel::onPathError(QString p)
@@ -63,6 +65,11 @@ void FormModel::onTemplatesError(QString err)
 {
     emit errorMasseageRequested("Загрузка шаблонов", "Произошла ошибка при загрузке шаблонов: " + err);
     emit appStateSwitchRequested("Функционал ограничен");
+}
+
+void FormModel::onSuitLoaded(FormDataMap suitData)
+{
+    emit suitDataLoaded(suitData.raw());
 }
 
 void FormModel::onCannotUpdateFieldsForDoc(QString doc)

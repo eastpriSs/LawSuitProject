@@ -13,6 +13,8 @@ class FormPresenter : public QObject
 public:
     explicit FormPresenter(FileListModel* view, FormModel* model,
                            Highlight* highlight, ErrorHandler* errHandler, QObject *parent = nullptr);
+signals:
+    void suitDataLoaded(QVariantMap formData);
 
 public slots:
     void saveRequested(QString dist, QStringList files, const QVariantMap &formData);

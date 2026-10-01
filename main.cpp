@@ -31,6 +31,8 @@
 #include "data/dir_template_parser.h"
 #include "data/txt_template_fileds_parser.h"
 #include "data/json_recovery_file_maker.h"
+#include "data/json_suit_data_reader.h"
+#include "data/json_recovery_file_maker.h"
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +43,8 @@ int main(int argc, char *argv[])
     FileListModel fileModel;
     Highlight highlight;
     ErrorHandler errorHandler;
-
+    JsonSuitDataReader reader;
+    JsonRecoveryFileMaker recMaker;
     JsonConfigReader configRepo;
     LoadAppConfig loadConfigUseCase(&configRepo);
     AppConfig appConfig = loadConfigUseCase();
@@ -61,9 +64,10 @@ int main(int argc, char *argv[])
     qInfo() << "Root dir of app location:" << appLoc;
 
     SaveFiles saveFiles(&fs, &replacer, &jsonRecoveryMaker);
+    LoadSuit loadSuit(&reader, &recMaker);
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
-    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles);
+    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles, &loadSuit);
     FormPresenter presenter(&fileModel, &model, &highlight, &errorHandler);
 
     engine.rootContext()->setContextProperty("errorHandler", &errorHandler);

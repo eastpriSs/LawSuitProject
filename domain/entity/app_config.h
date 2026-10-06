@@ -5,4 +5,5 @@
 struct AppConfig {
     QString templatesPath;
     QString fieldsPath;
+    QString systemDir;
 };

@@ -12,6 +12,7 @@ ColumnLayout {
 
     signal saveClicked()
     signal loadClicked()
+    signal openClicked()
 
     Button {
         id: saveBtn
@@ -73,6 +74,8 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: StyleManager.buttonHeight
         hoverEnabled: true
+
+        onClicked: openClicked()
 
         background: Rectangle {
             radius: 8

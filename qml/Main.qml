@@ -96,6 +96,7 @@ ApplicationWindow {
         }
     }
 
+
     Connections {
         target: Presenter
 
@@ -332,6 +333,41 @@ ApplicationWindow {
                     Layout.preferredHeight: 3 * StyleManager.buttonHeight + 2 * StyleManager.spacingTiny
                     onSaveClicked: folderDialog.open()
                     onLoadClicked: fileDialog.open()
+                    onOpenClicked: {
+                        var formData = {
+                        main: {
+                            caseName: caseNameInput.text,
+                            caseID: caseIDInput.text,
+                            dateReceived: dateButton.text,
+                            judgeName: lawyerNameInput.text,
+                            judgePhone: lawyerNumberInput.text,
+                            courtType: courtTypeCombo.currentText,
+                            courtAddress: courtAddressCombo.currentText
+                        },
+                        plaintiff: {
+                            name: plaintiffBox.plaintiffName,
+                            address: plaintiffBox.plaintiffAddress,
+                            phone: plaintiffBox.plaintiffPhone,
+                            representative: plaintiffBox.plaintiffRep
+                        },
+                        defendant: {
+                            name: defendantBox.defendantName,
+                            address: defendantBox.defendantAddress,
+                            phone: defendantBox.defendantPhone,
+                            representative: defendantBox.defendantRep
+                        },
+                        expertise: {
+                            type: expertiseBox.expertiseType,
+                            subject: expertiseBox.expertiseSubject,
+                            expert: expertiseBox.expertCurrentText,
+                            dueDate: expertiseBox.dateButtonText,
+                            travelCost: expertiseBox.travelCost,
+                            totalCost: expertiseBox.totalCost
+                        }
+                        };
+                        var files = FileModel.getCheckedFiles()
+                        Presenter.openRequested(files, formData)
+                    }
                 }
             }
         }

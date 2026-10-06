@@ -10,6 +10,7 @@ class IFileSaverRepository : public QObject
 public:
     explicit IFileSaverRepository(QObject *parent = nullptr);
     virtual void saveFiles(QString dist, QString dirName, QList<ProccessedFile> files) = 0;
+    virtual void saveTemproryFiles(QList<ProccessedFile> files) = 0;
 signals:
 };
 

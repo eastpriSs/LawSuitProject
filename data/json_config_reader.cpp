@@ -11,6 +11,7 @@ AppConfig JsonConfigReader::loadConfig() {
         QJsonObject obj = doc.object();
         config.templatesPath = obj["templatesPath"].toString();
         config.fieldsPath = obj["fieldsPath"].toString();
+        config.systemDir = obj["systemDir"].toString();
     }
     return config;
 }

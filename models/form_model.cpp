@@ -5,8 +5,9 @@
 #include "form_model.h"
 #include "../domain/entity/form_data_map.h"
 
-FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, SaveFiles* sf, LoadSuit* ls, QObject *parent)
-    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields), saveFiles(sf), loadSuit(ls)
+FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields,
+                     SaveFiles* sf, LoadSuit* ls, OpenTemproryDocuments* op, QObject *parent)
+    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields), saveFiles(sf), loadSuit(ls), openDocuments(op)
 {
     connect(updateTemplatesFields, &UpdateTemplateFields::CannotUpdateFieldsForDoc,
             this, &FormModel::onCannotUpdateFieldsForDoc);
@@ -53,6 +54,14 @@ void FormModel::saveRequested(QString dist, QStringList files, const QVariantMap
 void FormModel::loadRequested(QString file)
 {
     (*loadSuit)(file);
+}
+
+void FormModel::openRequested(QStringList files, const QVariantMap &formData)
+{
+    FormDataMap map;
+    map.parse(formData);
+    qInfo() << "Open requested to " << " with " << files;
+    (*openDocuments)(files, map);
 }
 
 void FormModel::onPathError(QString p)

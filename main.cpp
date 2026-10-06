@@ -21,6 +21,7 @@
 #include "domain/use_case/load_app_config.h"
 #include "domain/use_case/update_template_list.h"
 #include "domain/use_case/update_template_fields.h"
+#include "domain/use_case/open_temprory_documents.h"
 
 // Data
 #include "data/dir_template_parser.h"
@@ -33,6 +34,7 @@
 #include "data/json_recovery_file_maker.h"
 #include "data/json_suit_data_reader.h"
 #include "data/json_recovery_file_maker.h"
+#include "data/document_opener.h"
 
 int main(int argc, char *argv[])
 {
@@ -55,8 +57,10 @@ int main(int argc, char *argv[])
 
     DirTemplateParser dirParser(appConfig.templatesPath);
     TemplateFieldsTxtParser txtParser(appConfig.fieldsPath);
+    DocumentOpener docOpener(appConfig.systemDir);
     XmlTagsReplacer replacer;
-    FileSaver fs;
+    FileSaver fs(appConfig.systemDir);
+
     JsonRecoveryFileMaker jsonRecoveryMaker; // todo in constructor add QString filename
 
     QString appLoc = app.applicationFilePath();
@@ -67,7 +71,8 @@ int main(int argc, char *argv[])
     LoadSuit loadSuit(&reader, &recMaker);
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
-    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles, &loadSuit);
+    OpenTemproryDocuments openTemproryDocuments(&replacer, &fs, &docOpener);
+    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles, &loadSuit, &openTemproryDocuments);
     FormPresenter presenter(&fileModel, &model, &highlight, &errorHandler);
 
     engine.rootContext()->setContextProperty("errorHandler", &errorHandler);

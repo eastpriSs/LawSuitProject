@@ -29,3 +29,23 @@ void FileSaver::saveFiles(QString dist, QString dirName, QList<ProccessedFile> f
         f.close();
     }
 }
+
+void FileSaver::saveTemproryFiles(QList<ProccessedFile> files)
+{
+    for (const ProccessedFile &file : files)
+    {
+        QFile f(systemDir + file.fileName());
+        if (!f.open(QIODevice::WriteOnly)) {
+            qWarning() << "Cannot open file for writing:" << f.fileName();
+            continue;
+        }
+
+        qint64 written = f.write(file.content());
+        if (written != file.content().size()) {
+            qWarning() << "Failed to write all bytes to" << f.fileName()
+                       << "Expected:" << file.content().size()
+                       << "Written:" << written;
+        }
+        f.close();
+    }
+}

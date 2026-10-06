@@ -8,11 +8,13 @@
 #include "../domain/use_case/update_template_fields.h"
 #include "../domain/use_case/save_files.h"
 #include "../domain/use_case/load_suit.h"
+#include "../domain/use_case/open_temprory_documents.h"
 
 class FormModel : public QObject {
     Q_OBJECT
 public:
-    explicit FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields, SaveFiles* sf, LoadSuit* ls, QObject *parent = nullptr);
+    explicit FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields,
+                       SaveFiles* sf, LoadSuit* ls, OpenTemproryDocuments* op, QObject *parent = nullptr);
     void templatesRequested();
 
 signals:
@@ -27,6 +29,7 @@ public slots:
     void templateChecked(const QString &name, bool checked);
     void saveRequested(QString dist, QStringList files, const QVariantMap &formData);
     void loadRequested(QString file);
+    void openRequested(QStringList files, const QVariantMap &formData);
 
 private slots:
     void onCannotUpdateFieldsForDoc(QString doc);
@@ -41,6 +44,7 @@ private:
     UpdateTemplateFields* updateTemplatesFields;
     LoadSuit* loadSuit;
     SaveFiles* saveFiles;
+    OpenTemproryDocuments* openDocuments;
 };
 
 #endif // FORM_MODEL_H

@@ -4,6 +4,9 @@
 #include <QByteArray>
 #include <QString>
 
+// todo сделать ProccessedFile_view чтобы избежать копирования m_content
+// todo может стоит сделать isCreated и systemLocation, это поможет documentOpener
+//      -- сразу находить файл и открывать и уменьшит привязку к пути
 class ProccessedFile
 {
 public:

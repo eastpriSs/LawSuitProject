@@ -1,4 +1,5 @@
 {
     "templatesPath" : "/templates/",
-    "fieldsPath" : "/settings/fileds_to_fill/"
+    "fieldsPath" : "/settings/fileds_to_fill/",
+    "systemDir" : "/settings/temp/"
 }

@@ -32,15 +32,17 @@ void FormModel::templatesRequested()
 }
 
 void FormModel::templateChecked(const QString &name, bool checked)
-{
+{ // todo может есть вариант получше
+    QSet<QString> fields;
     checkedTemplates[name] = checked;
-    if (checked) {
-        QSet<QString> fields;
-        foreach (QString i, templatesFields[name]) {
-            fields.insert(i);
+    for (const auto& [checkedTemplate, isChecked] : checkedTemplates.asKeyValueRange()) {
+        if (isChecked) {
+            foreach (QString i, templatesFields[checkedTemplate]) {
+                fields.insert(i);
+            }
         }
-        emit highlightFieldsRequested(fields);
     }
+    emit highlightFieldsRequested(fields);
 }
 
 void FormModel::saveRequested(QString dist, QStringList files, const QVariantMap &formData)

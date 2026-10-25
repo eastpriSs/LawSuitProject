@@ -18,7 +18,7 @@ static void replacePlaceholders(QDomDocument& doc, const QMap<QString, QString> 
         qInfo() << text;
         bool changed = false;
         for (auto it = placeholders.cbegin(); it != placeholders.cend(); ++it) {
-            const QString placeholder = QStringLiteral("{{%1}}").arg(it.key());
+            const QString placeholder = QStringLiteral("%1").arg(it.key());
             if (text.contains(placeholder)) {
                 text.replace(placeholder, it.value());
                 changed = true;

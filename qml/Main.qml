@@ -5,7 +5,7 @@ import QtQuick.Dialogs
 import Qt.labs.platform 1.1 as Platform
 
 ApplicationWindow {
-    width: 850
+    width: 1150
     height: 750
     visible: true
     title: qsTr("Lawsuit Pro")
@@ -37,34 +37,40 @@ ApplicationWindow {
                 judgeName: lawyerNameInput.text,
                 judgePhone: lawyerNumberInput.text,
                 courtType: courtTypeCombo.currentText,
-                courtAddress: courtAddressCombo.currentText
+                judgeDate: dateButtonJudge.text
             },
             plaintiff: {
                 name: plaintiffBox.plaintiffName,
                 address: plaintiffBox.plaintiffAddress,
                 phone: plaintiffBox.plaintiffPhone,
-                representative: plaintiffBox.plaintiffRep
+                representative: plaintiffBox.plaintiffRep,
+                isPayer: plaintiffBox.plaintiffPay
             },
             defendant: {
                 name: defendantBox.defendantName,
                 address: defendantBox.defendantAddress,
                 phone: defendantBox.defendantPhone,
-                representative: defendantBox.defendantRep
+                representative: defendantBox.defendantRep,
+                isPayer: defendantBox.defendantPay
             },
             expertise: {
                 type: expertiseBox.expertiseType,
-                subject: expertiseBox.expertiseSubject,
                 expert: expertiseBox.expertCurrentText,
                 dueDate: expertiseBox.dateButtonText,
                 travelCost: expertiseBox.travelCost,
-                totalCost: expertiseBox.totalCost
+                totalCost: expertiseBox.totalCost,
+                totalCostWords: expertiseBox.totalCostWords,
+                usdCost: expertiseBox.usdCost,
+                usdCostWords: expertiseBox.usdCostWords,
+                accountNumber: expertiseBox.accountNumberText,
+                accountDate: expertiseBox.accountDateButtonText
             }
             };
 
             var folderPath = folderDialog.folder.toString()
-            folderPath = folderPath.replace(/^file:\/\//, "") // todo: move to model side
+            folderPath = folderPath.replace(/^file:\/\//, "")
             console.log("Выбрана папка:", folderPath)
-            if (folderPath === "") { // todo: move to model side
+            if (folderPath === "") {
                 console.warn("Путь пустой")
                 return
             }
@@ -102,32 +108,39 @@ ApplicationWindow {
 
         function onSuitDataLoaded(formData) {
             // main
-            caseNameInput.text       = formData.main.caseName
-            caseIDInput.text         = formData.main.caseID
-            dateButton.text          = formData.main.dateReceived
-            lawyerNameInput.text     = formData.main.judgeName
-            lawyerNumberInput.text   = formData.main.judgePhone
-            courtTypeCombo.currentIndex = courtTypeCombo.find(formData.main.courtType)
-            courtAddressCombo.currentIndex = courtAddressCombo.find(formData.main.courtAddress)
+            caseNameInput.text         = formData.main.caseName
+            caseIDInput.text           = formData.main.caseID
+            dateButton.text            = formData.main.dateReceived
+            lawyerNameInput.text       = formData.main.judgeName
+            lawyerNumberInput.text     = formData.main.judgePhone
+            courtTypeCombo.displayText = formData.main.courtType
+            dateButtonJudge.text       = formData.main.judgeDate || "Выбрать дату"
 
             // plaintiff
             plaintiffBox.plaintiffName    = formData.plaintiff.name
             plaintiffBox.plaintiffAddress = formData.plaintiff.address
             plaintiffBox.plaintiffPhone   = formData.plaintiff.phone
             plaintiffBox.plaintiffRep     = formData.plaintiff.representative
+            plaintiffBox.plaintiffPay     = !!formData.plaintiff.isPayer
 
             // defendant
             defendantBox.defendantName    = formData.defendant.name
             defendantBox.defendantAddress = formData.defendant.address
             defendantBox.defendantPhone   = formData.defendant.phone
             defendantBox.defendantRep     = formData.defendant.representative
+            defendantBox.defendantPay     = !!formData.defendant.isPayer
 
             // expertise
             expertiseBox.expertiseType        = formData.expertise.type
-            expertiseBox.expertiseSubject     = formData.expertise.subject
             expertiseBox.dateButtonText       = formData.expertise.dueDate
             expertiseBox.travelCost           = formData.expertise.travelCost
             expertiseBox.totalCost            = formData.expertise.totalCost
+            expertiseBox.totalCostWords       = formData.expertise.totalCostWords || ""
+            expertiseBox.usdCost              = formData.expertise.usdCost || ""
+            expertiseBox.usdCostWords         = formData.expertise.usdCostWords || ""
+            expertiseBox.accountNumberText    = formData.expertise.accountNumber || ""
+            expertiseBox.accountDateButtonText = formData.expertise.accountDate || "Выбрать дату счёта"
+
             var idx = expertiseBox.expertModel.indexOf(formData.expertise.expert)
             if (idx !== -1)
                 expertiseBox.expertCurrentIndex = idx
@@ -222,7 +235,16 @@ ApplicationWindow {
                             Layout.fillWidth: true
                             spacing: StyleManager.spacingSmall
                             TextField { id: caseNameInput; placeholderText: "Название"; Layout.fillWidth: true }
-                            TextField { id: caseIDInput; placeholderText: "Рег. номер"; Layout.preferredWidth: 180 }
+                            Text {
+                                text: "Заявление №"
+                                color: (mainInfoGroupBox.isHighlightNeeded && Highlight.activeFields.indexOf(text) !== -1)
+                                       ? StyleManager.accentTextColor : StyleManager.secondaryText
+                                font.weight: Font.Normal
+                                Layout.preferredWidth: StyleManager.labelWidth
+                                horizontalAlignment: Text.AlignRight
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                            TextField { id: caseIDInput; placeholderText: "№"; Layout.preferredWidth: 180 }
                         }
 
                         Text {
@@ -277,20 +299,29 @@ ApplicationWindow {
                             spacing: StyleManager.spacingSmall
                             ComboBox {
                                 id: courtTypeCombo
-                                model: ["Арбитражный", "Мировой", "Районный"]
+                                model: ["Суды АК с адресами"]
                                 Layout.fillWidth: true
+                                editable: true
                             }
-                            Text {
-                                text: "Адрес:"
-                                color: (mainInfoGroupBox.isHighlightNeeded && Highlight.activeFields.indexOf(text) !== -1)
-                                       ? StyleManager.accentTextColor : StyleManager.secondaryText
-                                font.weight: Font.Normal
+                            Button {
+                                id: editCourtModel
+                                text: "+"
                             }
-                            ComboBox {
-                                id: courtAddressCombo
-                                model: ["ул. Ленина, 1", "пр. Мира, 45"]
-                                Layout.preferredWidth: StyleManager.phoneWidth
-                            }
+                        }
+                        Text {
+                            text: "Определение суда: "
+                            color: (mainInfoGroupBox.isHighlightNeeded && Highlight.activeFields.indexOf(text) !== -1)
+                                   ? StyleManager.accentTextColor : StyleManager.secondaryText
+                            font.weight: Font.Normal
+                            Layout.preferredWidth: StyleManager.labelWidth
+                            horizontalAlignment: Text.AlignRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        Button {
+                            id: dateButtonJudge
+                            text: "Выбрать дату"
+                            Layout.fillWidth: true
+                            onClicked: judgeDatePicker.open()
                         }
                     }
                 }
@@ -302,6 +333,10 @@ ApplicationWindow {
                 DatePickerPopup {
                     id: mainDatePicker
                     onDateSelected: (dateText) => { dateButton.text = dateText }
+                }
+                DatePickerPopup {
+                    id: judgeDatePicker
+                    onDateSelected: (dateText) => { dateButtonJudge.text = dateText }
                 }
             }
 
@@ -342,19 +377,21 @@ ApplicationWindow {
                             judgeName: lawyerNameInput.text,
                             judgePhone: lawyerNumberInput.text,
                             courtType: courtTypeCombo.currentText,
-                            courtAddress: courtAddressCombo.currentText
+                            judgeDate: dateButtonJudge.text
                         },
                         plaintiff: {
                             name: plaintiffBox.plaintiffName,
                             address: plaintiffBox.plaintiffAddress,
                             phone: plaintiffBox.plaintiffPhone,
-                            representative: plaintiffBox.plaintiffRep
+                            representative: plaintiffBox.plaintiffRep,
+                            isPayer: plaintiffBox.plaintiffPay
                         },
                         defendant: {
                             name: defendantBox.defendantName,
                             address: defendantBox.defendantAddress,
                             phone: defendantBox.defendantPhone,
-                            representative: defendantBox.defendantRep
+                            representative: defendantBox.defendantRep,
+                            isPayer: defendantBox.defendantPay
                         },
                         expertise: {
                             type: expertiseBox.expertiseType,
@@ -362,7 +399,12 @@ ApplicationWindow {
                             expert: expertiseBox.expertCurrentText,
                             dueDate: expertiseBox.dateButtonText,
                             travelCost: expertiseBox.travelCost,
-                            totalCost: expertiseBox.totalCost
+                            totalCost: expertiseBox.totalCost,
+                            totalCostWords: expertiseBox.totalCostWords,
+                            usdCost: expertiseBox.usdCost,
+                            usdCostWords: expertiseBox.usdCostWords,
+                            accountNumber: expertiseBox.accountNumberText,
+                            accountDate: expertiseBox.accountDateButtonText
                         }
                         };
                         var files = FileModel.getCheckedFiles()

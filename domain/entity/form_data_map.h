@@ -12,6 +12,7 @@ public:
         QString address;
         QString phone;
         QString representative;
+        bool isPayer;
     };
 
     struct MainInfo {
@@ -26,7 +27,6 @@ public:
 
     struct ExpertiseInfo {
         QString type;
-        QString subject;
         QString expert;
         QString dueDate;
         QString travelCost;

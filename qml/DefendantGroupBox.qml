@@ -10,6 +10,9 @@ CustomGroupBox {
     property alias defendantAddress: defendantAddressField.text
     property alias defendantPhone: defendantPhoneField.text
     property alias defendantRep: defendantRepField.text
+    property alias defendantPay: defendantPay.checked
+
+    signal payerChecked()
 
 
     GridLayout {
@@ -81,6 +84,12 @@ CustomGroupBox {
             id: defendantRepField
             placeholderText: "ФИО представителя по доверенности"
             Layout.fillWidth: true
+        }
+
+        CheckBox {
+            id: defendantPay
+            text: "Плательщик"
+            onCheckedChanged: payerChecked()
         }
     }
 }

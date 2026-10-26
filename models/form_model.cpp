@@ -6,6 +6,14 @@
 #include "../domain/entity/form_data_map.h"
 #include "../domain/entity/lookup_list_type.h"
 
+namespace {
+
+void invalidate(QStringList& cache){
+    cache.clear();
+}
+
+}
+
 FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields,
                      SaveFiles* sf, LoadSuit* ls, OpenTemproryDocuments* op,
                      LoadLookupList* loadll, SaveLookupList* savell, QObject *parent)
@@ -71,38 +79,40 @@ void FormModel::openRequested(QStringList files, const QVariantMap &formData)
 
 void FormModel::requestCourtModel()
 {
-    QStringList courtsList = (*loadList)(LookupListType::Court);
-    if (!courtsList.empty())
-        emit courtModelLoaded(courtsList);
+    if (courtModelCache.empty())
+        courtModelCache = (*loadList)(LookupListType::Court);
+    emit courtModelLoaded(courtModelCache);
 }
 
 void FormModel::requestExpertModel()
 {
-    QStringList expertsList = (*loadList)(LookupListType::Expert);
-    if (!expertsList.empty())
-        emit expertModelLoaded(expertsList);
+    if (expertModelCache.empty())
+        expertModelCache = (*loadList)(LookupListType::Expert);
+    emit expertModelLoaded(expertModelCache);
 }
 
 void FormModel::requestExpertiseType()
 {
-    QStringList expertiseTypeList = (*loadList)(LookupListType::ExpertiseType);;
-    if (!expertiseTypeList.empty())
-        emit expertiseTypeLoaded(expertiseTypeList);
-
+    if (expertiseModelCache.empty())
+        expertiseModelCache = (*loadList)(LookupListType::ExpertiseType);;
+    emit expertiseTypeLoaded(expertiseModelCache);
 }
 
 void FormModel::saveCourtModel(const QStringList &items)
 {
+    invalidate(courtModelCache);
     (*saveList)(LookupListType::Court, items);
 }
 
 void FormModel::saveExpertModel(const QStringList &items)
 {
+    invalidate(expertModelCache);
     (*saveList)(LookupListType::Expert, items);
 }
 
 void FormModel::saveExpertiseType(const QStringList &items)
 {
+    invalidate(expertiseModelCache);
     (*saveList)(LookupListType::ExpertiseType, items);
 }
 

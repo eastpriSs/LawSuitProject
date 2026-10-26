@@ -62,6 +62,10 @@ private:
     OpenTemproryDocuments* openDocuments;
     LoadLookupList* loadList;
     SaveLookupList* saveList;
+
+    QStringList courtModelCache;
+    QStringList expertModelCache;
+    QStringList expertiseModelCache;
 };
 
 #endif // FORM_MODEL_H

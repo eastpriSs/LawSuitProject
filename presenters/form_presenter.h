@@ -13,13 +13,26 @@ class FormPresenter : public QObject
 public:
     explicit FormPresenter(FileListModel* view, FormModel* model,
                            Highlight* highlight, ErrorHandler* errHandler, QObject *parent = nullptr);
+    void getReadyUi();
 signals:
     void suitDataLoaded(QVariantMap formData);
+
+    void courtModelLoaded(const QStringList &items);
+    void expertModelLoaded(const QStringList &items);
+    void expertiseTypeLoaded(const QStringList &items);
 
 public slots:
     void saveRequested(QString dist, QStringList files, const QVariantMap &formData);
     void openRequested(QStringList files, const QVariantMap &formData);
     void loadRequested(QString file);
+
+    void requestCourtModel();
+    void requestExpertModel();
+    void requestExpertiseType();
+
+    void saveCourtModel(const QStringList &items);
+    void saveExpertModel(const QStringList &items);
+    void saveExpertiseType(const QStringList &items);
 
 private:
     FileListModel* view;

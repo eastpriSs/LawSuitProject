@@ -12,6 +12,7 @@ AppConfig JsonConfigReader::loadConfig() {
         config.templatesPath = obj["templatesPath"].toString();
         config.fieldsPath = obj["fieldsPath"].toString();
         config.systemDir = obj["systemDir"].toString();
+        config.modelCfg = obj["comboBoxModels"].toString();
     }
     return config;
 }

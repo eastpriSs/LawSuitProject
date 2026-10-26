@@ -79,6 +79,36 @@ ApplicationWindow {
         }
     }
 
+    EditableListDialog {
+        id: courtModelDialog
+        headerText: qsTr("Редактировать список судов")
+        initialItems: courtTypeCombo.model
+        onItemsSaved: (items) => {
+            courtTypeCombo.model = items
+            Presenter.saveCourtModel(items)
+        }
+    }
+
+    EditableListDialog {
+        id: expertModelDialog
+        headerText: qsTr("Редактировать список экспертов")
+        initialItems: expertiseBox.expertModel
+        onItemsSaved: (items) => {
+            expertiseBox.expertModel = items
+            Presenter.saveExpertModel(items)
+        }
+    }
+
+    EditableListDialog {
+        id: typeModelDialog
+        headerText: qsTr("Редактировать список видов экспертиз")
+        initialItems: expertiseBox.expertiseType
+        onItemsSaved: (items) => {
+            expertiseBox.expertiseType = items
+            Presenter.saveExpertiseType(items)
+        }
+    }
+
     Dialog {
         id: errorDialog
         title: "Ошибка"
@@ -99,6 +129,25 @@ ApplicationWindow {
             errorDialog.title = title
             errorDialog.message = message
             errorDialog.open()
+        }
+    }
+
+    Connections {
+        target: Presenter
+
+        function onCourtModelLoaded(items) {
+            courtTypeCombo.model = items
+            courtModelDialog.initialItems = items
+        }
+
+        function onExpertModelLoaded(items) {
+            expertiseBox.expertModel = items
+            expertModelDialog.initialItems = items
+        }
+
+        function onExpertiseTypeLoaded(items) {
+            expertiseBox.expertiseType = items
+            typeModelDialog.initialItems = items
         }
     }
 
@@ -299,13 +348,16 @@ ApplicationWindow {
                             spacing: StyleManager.spacingSmall
                             ComboBox {
                                 id: courtTypeCombo
-                                model: ["Суды АК с адресами"]
                                 Layout.fillWidth: true
                                 editable: true
                             }
                             Button {
                                 id: editCourtModel
                                 text: "+"
+                                onClicked: {
+                                    Presenter.requestCourtModel()
+                                    courtModelDialog.open()
+                                }
                             }
                         }
                         Text {
@@ -328,7 +380,18 @@ ApplicationWindow {
 
                 PlaintiffGroupBox { id: plaintiffBox; Layout.fillWidth: true }
                 DefendantGroupBox { id: defendantBox; Layout.fillWidth: true }
-                ExpertiseGroupBox { id: expertiseBox; Layout.fillWidth: true }
+                ExpertiseGroupBox {
+                    id: expertiseBox;
+                    Layout.fillWidth: true
+                    onEditTypeClicked: {
+                        Presenter.requestExpertiseType()
+                        typeModelDialog.open()
+                    }
+                    onEditExpertClicked: {
+                        Presenter.requestExpertModel()
+                        expertModelDialog.open()
+                    }
+                }
 
                 DatePickerPopup {
                     id: mainDatePicker

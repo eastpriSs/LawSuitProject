@@ -1,5 +1,6 @@
 {
     "templatesPath" : "/templates/",
     "fieldsPath" : "/settings/fileds_to_fill/",
-    "systemDir" : "/settings/temp/"
+    "systemDir" : "/settings/temp/",
+    "comboBoxModels" : "settings/models/models.json"
 }

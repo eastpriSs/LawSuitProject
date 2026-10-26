@@ -4,10 +4,13 @@
 
 #include "form_model.h"
 #include "../domain/entity/form_data_map.h"
+#include "../domain/entity/lookup_list_type.h"
 
 FormModel::FormModel(UpdateTemplateList* updTempls, UpdateTemplateFields* updFields,
-                     SaveFiles* sf, LoadSuit* ls, OpenTemproryDocuments* op, QObject *parent)
-    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields), saveFiles(sf), loadSuit(ls), openDocuments(op)
+                     SaveFiles* sf, LoadSuit* ls, OpenTemproryDocuments* op,
+                     LoadLookupList* loadll, SaveLookupList* savell, QObject *parent)
+    : QObject{parent}, updateTemplates(updTempls), updateTemplatesFields(updFields),
+    saveFiles(sf), loadSuit(ls), openDocuments(op), loadList(loadll), saveList(savell)
 {
     connect(updateTemplatesFields, &UpdateTemplateFields::CannotUpdateFieldsForDoc,
             this, &FormModel::onCannotUpdateFieldsForDoc);
@@ -64,6 +67,43 @@ void FormModel::openRequested(QStringList files, const QVariantMap &formData)
     map.parse(formData);
     qInfo() << "Open requested to " << " with " << files;
     (*openDocuments)(files, map);
+}
+
+void FormModel::requestCourtModel()
+{
+    QStringList courtsList = (*loadList)(LookupListType::Court);
+    if (!courtsList.empty())
+        emit courtModelLoaded(courtsList);
+}
+
+void FormModel::requestExpertModel()
+{
+    QStringList expertsList = (*loadList)(LookupListType::Expert);
+    if (!expertsList.empty())
+        emit expertModelLoaded(expertsList);
+}
+
+void FormModel::requestExpertiseType()
+{
+    QStringList expertiseTypeList = (*loadList)(LookupListType::ExpertiseType);;
+    if (!expertiseTypeList.empty())
+        emit expertiseTypeLoaded(expertiseTypeList);
+
+}
+
+void FormModel::saveCourtModel(const QStringList &items)
+{
+    (*saveList)(LookupListType::Court, items);
+}
+
+void FormModel::saveExpertModel(const QStringList &items)
+{
+    (*saveList)(LookupListType::Expert, items);
+}
+
+void FormModel::saveExpertiseType(const QStringList &items)
+{
+    (*saveList)(LookupListType::ExpertiseType, items);
 }
 
 void FormModel::onPathError(QString p)

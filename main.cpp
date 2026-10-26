@@ -22,6 +22,8 @@
 #include "domain/use_case/update_template_list.h"
 #include "domain/use_case/update_template_fields.h"
 #include "domain/use_case/open_temprory_documents.h"
+#include "domain/use_case/load_lookup_list.h"
+#include "domain/use_case/save_lookup_list.h"
 
 // Data
 #include "data/dir_template_parser.h"
@@ -35,6 +37,7 @@
 #include "data/json_suit_data_reader.h"
 #include "data/json_recovery_file_maker.h"
 #include "data/document_opener.h"
+#include "data/json_lookup_list_repository.h"
 
 int main(int argc, char *argv[])
 {
@@ -60,6 +63,7 @@ int main(int argc, char *argv[])
     DocumentOpener docOpener(appConfig.systemDir);
     XmlTagsReplacer replacer;
     FileSaver fs(appConfig.systemDir);
+    JsonLookupListRepository lookupListRepo(appConfig.modelCfg);
 
     JsonRecoveryFileMaker jsonRecoveryMaker; // todo in constructor add QString filename
 
@@ -67,12 +71,15 @@ int main(int argc, char *argv[])
     appLoc.erase(appLoc.begin() + appLoc.lastIndexOf("/"), appLoc.end());
     qInfo() << "Root dir of app location:" << appLoc;
 
+    LoadLookupList loadLookupList(&lookupListRepo);
+    SaveLookupList saveLookupList(&lookupListRepo);
     SaveFiles saveFiles(&fs, &replacer, &jsonRecoveryMaker);
     LoadSuit loadSuit(&reader, &recMaker);
     UpdateTemplateList updateTemplates(&dirParser);
     UpdateTemplateFields updateTemplatesFields(&txtParser);
     OpenTemproryDocuments openTemproryDocuments(&replacer, &fs, &docOpener);
-    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles, &loadSuit, &openTemproryDocuments);
+    FormModel model(&updateTemplates, &updateTemplatesFields, &saveFiles, &loadSuit, &openTemproryDocuments,
+                        &loadLookupList, &saveLookupList);
     FormPresenter presenter(&fileModel, &model, &highlight, &errorHandler);
 
     engine.rootContext()->setContextProperty("errorHandler", &errorHandler);
@@ -82,5 +89,6 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("Presenter", &presenter);
 
     engine.load(QUrl(QStringLiteral("qrc:/LawsuitProject/qml/Main.qml")));
+    presenter.getReadyUi();
     return app.exec();
 }

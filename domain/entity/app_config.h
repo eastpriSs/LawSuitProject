@@ -6,4 +6,5 @@ struct AppConfig {
     QString templatesPath;
     QString fieldsPath;
     QString systemDir;
+    QString modelCfg;
 };

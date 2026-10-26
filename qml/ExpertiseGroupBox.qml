@@ -5,6 +5,9 @@ import QtQuick.Layouts
 CustomGroupBox {
     title: "Экспертиза"
 
+    signal editTypeClicked()
+    signal editExpertClicked()
+
     readonly property bool isHighlightNeeded: Highlight.activeFields.indexOf(title) !== -1
 
     property alias expertiseType: typeField.model
@@ -40,11 +43,11 @@ CustomGroupBox {
             ComboBox {
                 id: typeField
                 Layout.fillWidth: true
-                model: ["Не назначен"]
             }
             Button {
                 id: editTypeModel
                 text: "+"
+                onClicked: editTypeClicked()
             }
         }
 
@@ -60,12 +63,12 @@ CustomGroupBox {
         RowLayout {
             ComboBox {
                 id: expertCombo
-                model: ["Не назначен", "Сидоров С.С.", "ООО \"ГлавЭкспертиза\"", "АНО \"Судэксперт\""]
                 Layout.fillWidth: true
             }
             Button {
                 id: editExpertModel
                 text: "+"
+                onClicked: editExpertClicked()
             }
         }
         Text {

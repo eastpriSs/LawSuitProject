@@ -13,6 +13,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(QuaZip-Qt6 REQUIRED)
 
 qt_add_executable(Lawsuit
@@ -67,6 +68,12 @@ qt_add_qml_module(Lawsuit
         SOURCES data/document_opener.h data/document_opener.cpp
         SOURCES domain/use_case/open_temprory_documents.h domain/use_case/open_temprory_documents.cpp
         SOURCES domain/repo_interfaces/i_document_opener_repository.h domain/repo_interfaces/i_document_opener_repository.cpp
+        QML_FILES qml/EditableListDialog.qml
+        SOURCES domain/entity/lookup_list_type.h domain/entity/lookup_list_type.cpp
+        SOURCES domain/use_case/load_lookup_list.h domain/use_case/load_lookup_list.cpp
+        SOURCES domain/repo_interfaces/i_lookup_list_repository.h domain/repo_interfaces/i_lookup_list_repository.cpp
+        SOURCES domain/use_case/save_lookup_list.h domain/use_case/save_lookup_list.cpp
+        SOURCES data/json_lookup_list_repository.h data/json_lookup_list_repository.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -85,6 +92,7 @@ target_link_libraries(Lawsuit
             Qt6::Xml
             QuaZip::QuaZip
 )
+target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 target_link_libraries(Lawsuit PRIVATE Qt6::Core)
 target_link_libraries(Lawsuit PRIVATE Qt6::Core)
